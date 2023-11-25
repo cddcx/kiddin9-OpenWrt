@@ -16,9 +16,9 @@ sed -i '/	refresh_config();/d' scripts/feeds
 echo "$(date +"%s")" >version.date
 sed -i '/$(curdir)\/compile:/c\$(curdir)/compile: package/opkg/host/compile' package/Makefile
 sed -i 's/$(TARGET_DIR)) install/$(TARGET_DIR)) install --force-overwrite --force-depends/' package/Makefile
-sed -i "s/DEFAULT_PACKAGES:=/DEFAULT_PACKAGES:=luci-app-firewall luci-app-opkg luci-app-filetransfer luci-app-openclash luci-app-passwall2 luci-app-ttyd luci-app-udpxy luci-app-upnp \
-luci-base luci-compat luci-lib-ipkg luci-lib-fs \
-coremark wget-ssl curl autocore htop nano zram-swap kmod-lib-zstd kmod-tcp-bbr bash openssh-sftp-server block-mount resolveip ds-lite swconfig /" include/target.mk
+sed -i "s/DEFAULT_PACKAGES:=/DEFAULT_PACKAGES:=luci-app-advanced luci-app-firewall luci-app-gpsysupgrade luci-app-opkg luci-app-upnp luci-app-autoreboot \
+luci-app-wizard luci-base luci-compat luci-lib-ipkg luci-lib-fs \
+coremark wget-ssl curl autocore htop nano zram-swap kmod-lib-zstd kmod-tcp-bbr bash openssh-sftp-server block-mount resolveip ds-lite swconfig luci-app-fan /" include/target.mk
 sed -i "s/procd-ujail//" include/target.mk
 
 sed -i "s/^.*vermagic$/\techo '1' > \$(LINUX_DIR)\/.vermagic/" include/kernel-defaults.mk
@@ -34,11 +34,10 @@ done
 
 mv -f feeds/kiddin9/r81* tmp/
 
-#sed -i "s/192.168.1/10.0.0/" package/feeds/kiddin9/base-files/files/bin/config_generate
-#sed -i "s/192.168.1/10.0.0/" package/base-files/files/bin/config_generate
+sed -i "s/192.168.1/10.0.0/" package/feeds/kiddin9/base-files/files/bin/config_generate
+sed -i "s/192.168.1/10.0.0/" package/base-files/files/bin/config_generate
 
-# 修改密码
-sed -i 's/root:::0:99999:7:::/root:$1$SOP5eWTA$fJV8ty3QohO0chErhlxCm1:18775:0:99999:7:::/g' package/base-files/files/etc/shadow
+#sed -i "/call Build\/check-size,\$\$(KERNEL_SIZE)/d" include/image.mk
 
 svn checkout https://github.com/coolsnowwolf/lede/trunk/target/linux/generic/hack-5.15 target/linux/generic/hack-5.15
 curl -sfL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/generic/pending-5.15/613-netfilter_optional_tcp_window_check.patch -o target/linux/generic/pending-5.15/613-netfilter_optional_tcp_window_check.patch
